@@ -4,6 +4,7 @@ import edu.cnm.deepdive.cards.Deck.InsufficientCardsException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * This class implements (partially) a Blackjack hand, supporting drawing cards
@@ -30,6 +31,14 @@ public abstract class BlackjackHand implements Comparable<BlackjackHand> {
       10,
       10,
   };
+  private static final String RESOURCE_BUNDlE = "resources/blackjack_hand";
+  public static final String BUSTED_PATTERN_KEY = "busted_pattern";
+  public static final String BLACKJACK_PATTERN_KEY = "blackjack_pattern";
+  public static final String POINTS_PATTERN_KEY = "points_pattern";
+  public static final String T0_STRING_PATTERN_KEY = "to_string_pattern";
+  public static final String HARD_POINTS_PATTERN_KEY = "hard_points_pattern";
+
+  private static ResourceBundle bundle;
 
   private List<Card> hand;
   private Deck deck;
@@ -39,6 +48,9 @@ public abstract class BlackjackHand implements Comparable<BlackjackHand> {
   private int value;
   private int total;
 
+  static {
+    bundle = ResourceBundle.getBundle(RESOURCE_BUNDlE);
+  }
   /**
    * Initializes this instance with the specified {@link Deck}. 2 cards are
    * immediately drawn from this deck, and the same deck is used for subsequent
@@ -206,15 +218,16 @@ public abstract class BlackjackHand implements Comparable<BlackjackHand> {
   public String toString() {
     String status;
     if (isBusted()) {
-      status = String.format("Busted (%d)!", total);
+      status = String.format(bundle.getString(BUSTED_PATTERN_KEY), total);
     } else if (isBlackjack()) {
-      status = "Blackjack!";
+      status = bundle.getString(BLACKJACK_PATTERN_KEY);
     } else if (isSoft()) {
-      status = String.format("(%d|%d)", total - 10, total);
+      status = String.format(bundle.getString(POINTS_PATTERN_KEY), total - 10, total);
     } else {
-      status = String.format("(%d)", total);
+      status = String.format((bundle.getString(HARD_POINTS_PATTERN_KEY)), total);
     }
-    return String.format("%s %s", Arrays.toString(getHand()), status);
+    return String.format(bundle.getString(T0_STRING_PATTERN_KEY)
+        + "s", Arrays.toString(getHand()), status);
   }
 
 }
